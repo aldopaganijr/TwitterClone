@@ -1,30 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:twitter_clone/singup.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  State<SignUp> createState() => _SignUpState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _SignUpState extends State<SignUp> {
   final GlobalKey<FormState> _signInKey = GlobalKey();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -42,7 +25,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Image(image: AssetImage("assets/twitterlogo.png"), width: 100),
             SizedBox(height: 20),
             const Text(
-              "Log in to Twitter",
+              "Sign up to Twitter",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Container(
@@ -115,18 +98,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
                 child: const Text(
-                  'Log in',
+                  'Sign up',
                   style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (context) => SignUp()));
+                Navigator.of(context).pop();
               },
-              child: Text("Don't have an account? Sign up here"),
+              child: Text("Already have an account? Log in"),
             ),
           ],
         ),
