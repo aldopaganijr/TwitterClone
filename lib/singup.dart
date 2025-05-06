@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -22,7 +23,7 @@ class _SignUpState extends State<SignUp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(image: AssetImage("assets/twitterlogo.png"), width: 100),
+            FaIcon(FontAwesomeIcons.twitter, size: 70, color: Colors.blue),
             SizedBox(height: 20),
             const Text(
               "Sign up to Twitter",
