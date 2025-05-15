@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:twitter_clone/models/user.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -9,9 +12,11 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GlobalKey<FormState> _signInKey = GlobalKey();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   final RegExp emailValid = RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
   );
@@ -37,7 +42,7 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextFormField(
-                controller: _emailController,
+                controller: emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   hintText: "Enter an Email",
@@ -65,7 +70,7 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextFormField(
-                controller: _passwordController,
+                controller: passwordController,
                 obscureText: true,
                 decoration: const InputDecoration(
                   hintText: "Enter a Password",
@@ -92,10 +97,25 @@ class _SignUpState extends State<SignUp> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: TextButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_signInKey.currentState!.validate()) {
-                    debugPrint("Email: ${_emailController.text}");
-                    debugPrint("Password: ${_passwordController.text}");
+                    try {
+                      await _auth.createUserWithEmailAndPassword(
+                        email: emailController.text,
+                        password: passwordController.text,
+                      );
+                      await _firestore
+                          .collection("users")
+                          .add(
+                            FirebaseUser(email: emailController.text).toMap(),
+                          );
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                    } catch (e) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(e.toString())));
+                    }
                   }
                 },
                 child: const Text(
