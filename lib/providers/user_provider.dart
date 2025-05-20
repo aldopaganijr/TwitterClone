@@ -1,5 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/models/user.dart';
 
@@ -32,6 +36,7 @@ class UserNotifier extends StateNotifier<LocalUser> {
       );
 
   FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<void> login(String email) async {
     QuerySnapshot response =
@@ -45,6 +50,26 @@ class UserNotifier extends StateNotifier<LocalUser> {
       user: FirebaseUser.fromMap(
         response.docs[0].data() as Map<String, dynamic>,
       ),
+    );
+  }
+
+  Future<void> updateName(String name) async {
+    await _firestore.collection('users').doc(state.id).update({'name': name});
+
+    state = state.copyWith(user: state.user.copyWith(name: name));
+  }
+
+  Future<void> updatePicture(File image) async {
+    Reference ref = _storage.ref().child("users").child(state.id);
+    TaskSnapshot snapchat = await ref.putFile(image);
+    String profilePicUrl = await snapchat.ref.getDownloadURL();
+
+    await _firestore.collection('users').doc(state.id).update({
+      'profilePic': profilePicUrl,
+    });
+
+    state = state.copyWith(
+      user: state.user.copyWith(profilePic: profilePicUrl),
     );
   }
 
