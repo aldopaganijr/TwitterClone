@@ -93,6 +93,7 @@ class _MyWidgetState extends ConsumerState<Home> {
             loading: () => CircularProgressIndicator(),
           ),
       drawer: Drawer(
+        key: ValueKey('profilePic'),
         child: Column(
           children: [
             Image.network(currentUser.user.profilePic),
@@ -113,6 +114,7 @@ class _MyWidgetState extends ConsumerState<Home> {
                   },
             ),
             ListTile(
+              key: ValueKey('signOut'),
               title: Text('Sign Out'),
               onTap:
                   () => {
